@@ -19,6 +19,7 @@
          <figure class="main__flag">
             <img :src="flag" alt="">
          </figure>
+         <div class="main__correct">{{ correct }}</div>
          <input class="main__answer" v-model="input" type="text" @keyup.enter="answer" >
       </main>
 
@@ -49,21 +50,18 @@
                flag: '',
                countries: [
                   'correctCountry',
-                  'country1',
-                  'country2',
-                  'ccoutnry3'
                ],
                points: 0,
                numberOfQuestions: 250,
                numberOfAnswers: 0,
                finished: false,
-               input: ''
+               input: '',
+               correct: '',
             }
          },
 
       async created() {
          this.fetchNew();
-
       },
 
       methods: {
@@ -72,7 +70,12 @@
             if (this.input === this.countries[0]) {
                this.points = (this.points + 1);
             } else {
-               console.log('wrong')
+               console.log(this.countries[0])
+               this.correct = this.countries[0]
+               // setTimeout(function(){
+               //    console.log('blablabla')
+               //    this.correct = ''
+               // }, 2000)
             }
             this.input = ''
             this.fetchNew()
@@ -107,6 +110,7 @@
             this.finished = false
             this.numberOfAnswers = 0
          },
+
       }
    }
 </script>
@@ -143,7 +147,12 @@
 
    .main__flag {
       margin-top: 20px;
-      height: 200px;
+      height: 250px;
+   }
+
+   .main__correct {
+      text-align: center;
+      font-size: 30px;
    }
 
    .main__answer {
