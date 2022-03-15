@@ -1,0 +1,11 @@
+:root {
+	--background: white;
+	--color: black;
+
+	--font-family: "Courier New";
+	--font-size: 20px;
+	--font-size-large: 40px;
+	--button-color-static: #f4c4cf;
+	--button-color-correct: rgb(152, 219, 75);
+	--button-color-wrong: red;
+}
