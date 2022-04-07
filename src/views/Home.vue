@@ -13,14 +13,15 @@
                </defs>
             </svg>
          </button>
-         <h2 class="header__points">{{ points }}/{{ numberOfQuestions }} </h2>
+         <h2 class="header__points">{{ points }}/{{ numberOfQuestions - 1 }} </h2>
       </header>
       <main class="main">
          <figure class="main__flag">
             <img :src="flag" alt="">
          </figure>
+         <div class="main__correct">{{ lastAnswer }}</div>
          <div class="main__correct">{{ correct }}</div>
-         <input class="main__answer" v-model="input" type="text" @keyup.enter="answer" >
+         <input class="main__answer" v-model="input" type="text" placeholder="type here" @keyup.enter="answer" >
       </main>
 
       <div v-if="finished" class="finished">
@@ -52,11 +53,12 @@
                   'correctCountry',
                ],
                points: 0,
-               numberOfQuestions: 250,
+               numberOfQuestions: 15,
                numberOfAnswers: 0,
                finished: false,
                input: '',
                correct: '',
+               lastAnswer: ''
             }
          },
 
@@ -69,17 +71,19 @@
          answer() {
             if (this.input === this.countries[0]) {
                this.points = (this.points + 1);
-            } else {
-               console.log(this.countries[0])
+               this.lastAnswer = 'Last answer was:'
                this.correct = this.countries[0]
-               // setTimeout(function(){
-               //    console.log('blablabla')
-               //    this.correct = ''
-               // }, 2000)
+            } else {
+               this.lastAnswer = 'Last answer was:'
+               this.correct = this.countries[0]
             }
             this.input = ''
             this.fetchNew()
          },
+
+         // hvis savret er riktig legges det til 1 poeng i scoren.
+         // svaret hvises på skjermen
+         // hvis ikke så hvises svaret på skjermen uten at det legges til poeng
 
          async fetchNew() {
             
@@ -87,21 +91,27 @@
             const res = await fetch(url);
             const result = await res.json();
             
+
             const correct = Math.floor(Math.random() * this.numberOfQuestions)
+            // gjør at et tilgfeldig land blir valgt ut 
 
             this.flag = result[correct].flags.png
+            // hviser bildet av flagegt som matcher svaret ut fra APIet
+
             this.countries[0] = result[correct].name.common
+            // hviser riktig navn i forrhold til flagget ut fra APIet
 
             this.numberOfAnswers += 1
-
             if(this.numberOfAnswers === this.numberOfQuestions) {
                this.finished = true
             }
+            // teller hvormange spørsmål som har gått og sørger for at det hvises et "finnished" når alle er svart på
          },
 
          correctAnswer() {
             this.points = (this.points + 1);
             this.fetchNew()
+            // legger til et poeng og henter nyt sprørsmål
          }, 
 
          reload() {
@@ -109,6 +119,7 @@
             this.points = 0
             this.finished = false
             this.numberOfAnswers = 0
+            // nullstiller og starter på nytt
          },
 
       }
@@ -157,12 +168,13 @@
 
    .main__answer {
       justify-self: center;
+      text-align: center;
       height: 50px;
       width: 320px;
       margin-top: 20px;
-      border: none;
-      background: blue;
+      border: 1px blue;
       font-size: var(--font-size-large)
+      
    }
 
    .finished {
@@ -182,7 +194,7 @@
    .finished__reload-button {
       border: none;
       background: none;
-      margin-top: 50%;
+      margin-top: 50px;
    }
 
 </style>
